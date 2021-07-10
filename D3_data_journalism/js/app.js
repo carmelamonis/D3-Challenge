@@ -40,12 +40,12 @@ d3.csv("../data/data.csv").then(function(data, err) {
 
     //Create x scale function
     var xLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.poverty)])
+        .domain([8, d3.max(data, d => d.poverty)])
         .range([0, width]);
 
     //Create y scale function
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.healthcare)])
+        .domain([4, d3.max(data, d => d.healthcare)])
         .range([height, 0]);
 
     //Create  axis functions
@@ -62,24 +62,29 @@ d3.csv("../data/data.csv").then(function(data, err) {
 
 
     //Create circles
-    //var circlesGroup = 
     chartGroup.selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
         .attr("cx", d => xLinearScale(d.poverty))
         .attr("cy", d => yLinearScale(d.healthcare))
-        .attr("r", 20)
-        .attr("fill", "#89bdd3")
+        .attr("r", 15)
+        .attr("class", "stateCircle")
         .attr("opacity", ".5");
 
-        //add text to circle
-    chartGroup.selectAll("circle")
+    //Add text abbreviations of states
+    chartGroup.selectAll("text")
         .data(data)
+        .enter()
         .append("text")
-        .attr("dx", function(d) {return -20})
+        .attr("x", d => xLinearScale(d.poverty))
+        .attr("y", d => yLinearScale(d.healthcare)+5)
         .attr("class", "stateText")
         .text(function(d) {return d.abbr});
+    
+
+
+    //var chartGroup = svg.append("g")
 
     //Create axes labels
     chartGroup.append("text")
@@ -88,14 +93,13 @@ d3.csv("../data/data.csv").then(function(data, err) {
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .attr("class", "aText")
-        .text("Healthcare (in %)");
+        .text("Lacks Healthcare (%)");
         
 
     chartGroup.append("text")
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
         .attr("class", "aText")
-        .text("Poverty (in %)");
+        .text("In Poverty (%)");
 }).catch(function(error) {
     console.log(error);
 });
-
